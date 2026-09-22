@@ -1,6 +1,6 @@
 # Workouts-Creator
 
-## Important Note:
+# Important Note:
 
 This is an old project, there are things I would do differently if I were to do it today.
 
