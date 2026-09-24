@@ -97,12 +97,3 @@ and additional options for the user, such as finishing a set/exercise and pausin
 
 nitsan447@gmail.com
 
-## Acknowledgements
-
-Completing the following courses greatly improved my understanding and knowledge of the tools used in this project:
-
-https://www.youtube.com/watch?v=OXGznpKZ_sA&ab_channel=freeCodeCamp.org
-
-https://www.udemy.com/course/nodejs-the-complete-guide/
-
-https://www.udemy.com/course/react-the-complete-guide-incl-redux/
