@@ -53,6 +53,7 @@ DROP TABLE IF EXISTS `routines`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `routines` (
+  `routine_id` int NOT NULL AUTO_INCREMENT,
   `workout_id` int NOT NULL,
   `exercise_id` int NOT NULL,
   `sets` int NOT NULL,
@@ -62,6 +63,7 @@ CREATE TABLE `routines` (
   `rest_time` int NOT NULL DEFAULT '0',
   `break_after_routine` int DEFAULT NULL,
   `order_in_workout` int NOT NULL,
+  PRIMARY KEY (`routine_id`),
   UNIQUE KEY `uc_workout_order` (`workout_id`,`order_in_workout`),
   KEY `exercise_id` (`exercise_id`),
   CONSTRAINT `routines_ibfk_1` FOREIGN KEY (`exercise_id`) REFERENCES `exercises` (`exercise_id`),
@@ -75,7 +77,7 @@ CREATE TABLE `routines` (
 
 LOCK TABLES `routines` WRITE;
 /*!40000 ALTER TABLE `routines` DISABLE KEYS */;
-INSERT INTO `routines` VALUES (414,295,8,_binary '',20,10,10,60,0),(414,296,5,_binary '',60,10,0,60,1),(414,297,4,_binary '',60,10,0,0,2);
+INSERT INTO `routines` VALUES (1,414,295,8,_binary '',20,10,10,60,0),(2,414,296,5,_binary '',60,10,0,60,1),(3,414,297,4,_binary '',60,10,0,0,2);
 /*!40000 ALTER TABLE `routines` ENABLE KEYS */;
 UNLOCK TABLES;
 

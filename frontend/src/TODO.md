@@ -14,6 +14,13 @@
 
 ## Bugs
 
+1. Guest users are never cleaned up, and the cleanup can crash the backend.
+   Guests are deleted by a 24 hour setTimeout in routes/auth.js (register):
+   - The timer lives in memory, so any server restart within those 24 hours drops it and the guest stays forever.
+   - If the guest created any workout or exercise, the DELETE fails on the foreign keys (no ON DELETE CASCADE).
+   - That error is thrown inside the async timer callback with nothing catching it, so the unhandled rejection kills the Node process.
+   Fix idea: mark guest users (is_guest + created_at) and delete them and their data in one periodic cleanup (or cascade the foreign keys).
+
 ## Other
 
 1. Readme file - Add Gif and how to run section.
