@@ -24,7 +24,7 @@ function PlayingWorkout(props) {
 	const [workoutFinished, setWorkoutFinished] = useState(false);
 
 	const currentExercise = exercises[currentExerciseIndex];
-	const usingTimer = currentExercise.time_or_repetitions.data[0] === 1;
+	const usingTimer = currentExercise.time_or_repetitions;
 	const lastSet = currentSet === +currentExercise.sets;
 
 	const getNewTimerTime = useCallback(() => {

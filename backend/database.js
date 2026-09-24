@@ -1,11 +1,25 @@
-const mysql = require("mysql2");
+const { Pool } = require("pg");
 
-const pool = mysql.createPool({
-	host: process.env.RDS_HOSTNAME || process.env.DB_HOST,
-	user: process.env.RDS_USERNAME || process.env.DB_USER,
-	password: process.env.RDS_PASSWORD || process.env.DB_PASSWORD,
-	port: process.env.RDS_PORT,
-	database: process.env.RDS_DB_NAME || process.env.DB,
-});
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-module.exports = pool.promise();
+async function query(text, params) {
+	const result = await pool.query(text, params);
+	return result.rows;
+}
+
+async function transaction(work) {
+	const client = await pool.connect();
+	try {
+		await client.query("BEGIN");
+		const result = await work(client);
+		await client.query("COMMIT");
+		return result;
+	} catch (error) {
+		await client.query("ROLLBACK");
+		throw error;
+	} finally {
+		client.release();
+	}
+}
+
+module.exports = { query, transaction };

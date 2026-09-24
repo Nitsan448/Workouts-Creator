@@ -20,12 +20,12 @@ router.post(
 	async (req, res, next) => {
 		try {
 			const encryptedPassword = await bcrypt.hash(req.body.password, 12);
-			const [results] = await User.register({
+			const results = await User.register({
 				userName: req.body.user_name,
 				email: req.body.email,
 				password: encryptedPassword,
 			});
-			const userId = results.insertId.toString();
+			const userId = results[0].user_id.toString();
 			const userData = { email: req.body.email, userId };
 			const token = setUserToken(res, userData);
 
@@ -65,7 +65,7 @@ function setUserToken(res, userData) {
 
 router.post("/login", async (req, res, next) => {
 	try {
-		let [user] = await User.findByEmailOrUserName(req.body.email_or_user_name);
+		let user = await User.findByEmailOrUserName(req.body.email_or_user_name);
 		if (user.length === 0) {
 			throw new Error("User could not be found");
 		}

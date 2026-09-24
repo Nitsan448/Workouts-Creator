@@ -17,7 +17,7 @@ function validateNameIsNotEmpty() {
 
 function validateUserNameDoesNotExist() {
 	return body("user_name").custom(async (userName) => {
-		const [user] = await User.findByUserName(userName);
+		const user = await User.findByUserName(userName);
 		if (user.length > 0) {
 			return Promise.reject("User name taken");
 		}
@@ -29,7 +29,7 @@ function validateEmailOnRegister() {
 		.isEmail()
 		.withMessage("Email is invalid")
 		.custom(async (email) => {
-			const [user] = await User.findByEmail(email);
+			const user = await User.findByEmail(email);
 			if (user.length > 0) {
 				return Promise.reject("Email address already exists");
 			}

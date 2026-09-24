@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/", async (req, res, next) => {
 	try {
-		const [workouts] = await Workout.getWorkouts(req.userId);
+		const workouts = await Workout.getWorkouts(req.userId);
 		res.status(200).json(workouts);
 	} catch (error) {
 		console.log(error.message);
@@ -18,8 +18,8 @@ router.get("/", async (req, res, next) => {
 router.get("/:workoutId", async (req, res, next) => {
 	const workoutId = req.params.workoutId;
 	try {
-		const [workout] = await Workout.findById(workoutId);
-		const [routines] = await Workout.getRoutines(workoutId);
+		const workout = await Workout.findById(workoutId);
+		const routines = await Workout.getRoutines(workoutId);
 		res.status(200).json({
 			image: workout[0].image,
 			...workout[0],
@@ -33,13 +33,13 @@ router.get("/:workoutId", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
 	const image = req.files === undefined || req.files.length === 0 ? null : req.files[0].location;
 	try {
-		const [results] = await Workout.addWorkout({
+		const results = await Workout.addWorkout({
 			name: req.body.name,
 			description: req.body.description,
 			userId: req.userId,
 			image,
 		});
-		res.status(201).json(results.insertId);
+		res.status(201).json(results[0].workout_id);
 	} catch (error) {
 		console.log(error.message);
 		res.status(500).json("Could not create workout");
@@ -48,7 +48,7 @@ router.post("/", async (req, res, next) => {
 
 router.patch("/", async (req, res, next) => {
 	try {
-		const [workout] = await Workout.findById(req.body.workout_id);
+		const workout = await Workout.findById(req.body.workout_id);
 		checkIfRowCanBeManipulated(workout, req.userId);
 
 		const image = await replaceImage(req.files, workout[0].image);
@@ -68,7 +68,7 @@ router.patch("/", async (req, res, next) => {
 router.delete("/:workoutId", async (req, res, next) => {
 	const workoutId = req.params.workoutId;
 	try {
-		const [workout] = await Workout.findById(workoutId);
+		const workout = await Workout.findById(workoutId);
 		checkIfRowCanBeManipulated(workout, req.userId);
 
 		if (workout[0].image) {

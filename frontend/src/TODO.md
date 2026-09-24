@@ -21,6 +21,20 @@
    - That error is thrown inside the async timer callback with nothing catching it, so the unhandled rejection kills the Node process.
    Fix idea: mark guest users (is_guest + created_at) and delete them and their data in one periodic cleanup (or cascade the foreign keys).
 
+2. Exercise images are deleted too early or never.
+   - DELETE /routines deletes the exercise's image file even when the exercise is still used by another workout, so the image breaks there.
+   - Deleting a workout (or a guest user) deletes only the workout image; images of exercises removed with it stay on disk forever.
+   Fix idea: delete an exercise's image only when the exercise row itself is deleted.
+
+3. Missing ownership checks.
+   PATCH /routines and POST /workouts/update_routines_order don't call checkIfRowCanBeManipulated,
+   so any logged in user can edit or reorder routines in another user's workout by sending its workout_id.
+   GET /workouts/:workoutId has the same gap for reading.
+
+4. Break screen in play mode shows placeholder text (PlayingWorkout.js, "Next:" section):
+   "{sets} sets of 5 minutes" is hardcoded instead of the next exercise's real set time / repetitions,
+   and the description is the literal string "dsa" instead of the exercise description.
+
 ## Other
 
 1. Readme file - Add Gif and how to run section.

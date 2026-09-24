@@ -25,7 +25,7 @@ function getRoutineFromRequest(req, image) {
 		image: image,
 		workoutId: req.body.workout_id,
 		sets: req.body.sets,
-		timeOrRepetitions: +req.body.time_or_repetitions,
+		timeOrRepetitions: req.body.time_or_repetitions === "1",
 		setTime: req.body.set_time,
 		repetitions: req.body.repetitions,
 		restTime: req.body.rest_time,
@@ -36,7 +36,7 @@ function getRoutineFromRequest(req, image) {
 
 router.patch("/", async (req, res, next) => {
 	try {
-		const [oldRoutine] = await Routine.findByWorkoutIdAndOrderInWorkout(
+		const oldRoutine = await Routine.findByWorkoutIdAndOrderInWorkout(
 			req.body.workout_id,
 			req.body.order_in_workout
 		);
@@ -54,7 +54,7 @@ router.patch("/", async (req, res, next) => {
 
 router.delete("/:workoutId/:orderInWorkout", async (req, res, next) => {
 	try {
-		const [routine] = await Routine.findByWorkoutIdAndOrderInWorkout(
+		const routine = await Routine.findByWorkoutIdAndOrderInWorkout(
 			req.params.workoutId,
 			req.params.orderInWorkout
 		);

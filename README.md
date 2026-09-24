@@ -66,10 +66,10 @@ react-router-dom 6.4, react-redux 8.0, react-hook-form 7.41, react-beautiful-dnd
 
 #### Backend
 
-Javascript 1.5, Node.js 16.15, MySQL 8.0.
+Javascript 1.5, Node.js 16.15, PostgreSQL 17.
 
 Main libraries used: <br /> 
-express 4.18, aws-sdk 2.1309, multer 1.4, mysql2 2.3
+express 4.18, multer 1.4, pg 8.23
 
 #### Deployment
 
