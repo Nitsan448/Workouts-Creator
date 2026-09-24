@@ -1,23 +1,16 @@
-const multerS3 = require("multer-s3");
-var AWS = require("aws-sdk");
+const fs = require("fs");
+const multer = require("multer");
+const path = require("path");
 
-AWS.config.update({
-	region: "eu-west-3",
-	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-	secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-});
+const IMAGES_DIRECTORY = path.join(__dirname, "..", "images");
 
-const s3 = new AWS.S3({ httpOptions: { timeout: 3000 } });
-
-const fileStorage = multerS3({
-	s3: s3,
-	bucket: process.env.AWS_BUCKET_NAME,
-	acl: "public-read",
-	metadata: function (req, file, cb) {
-		cb(null, { fieldName: file.fieldname });
-	},
-	key: function (req, file, cb) {
-		cb(null, new Date().toISOString().replace(/:/g, "-") + "-" + file.originalname);
+const fileStorage = multer.diskStorage({
+	destination: IMAGES_DIRECTORY,
+	filename: function (req, file, cb) {
+		const fileName = new Date().toISOString().replace(/:/g, "-") + "-" + file.originalname;
+		// Routes read the public URL from file.location, as multer-s3 used to provide it.
+		file.location = `${process.env.API_URL}/images/${encodeURIComponent(fileName)}`;
+		cb(null, fileName);
 	},
 });
 
@@ -49,12 +42,11 @@ async function replaceImage(uploadedImages, oldImage) {
 }
 
 async function deleteImage(image) {
-	const params = { Bucket: process.env.AWS_BUCKET_NAME, Key: getImageKey(image) };
-	await s3.deleteObject(params).promise();
+	await fs.promises.rm(path.join(IMAGES_DIRECTORY, getImageKey(image)), { force: true });
 }
 
 function getImageKey(imageUrl) {
-	return imageUrl.split("/").pop();
+	return decodeURIComponent(imageUrl.split("/").pop());
 }
 
-module.exports = { replaceImage, deleteImage, multerSettings };
+module.exports = { replaceImage, deleteImage, multerSettings, IMAGES_DIRECTORY };
